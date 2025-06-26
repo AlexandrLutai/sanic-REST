@@ -167,7 +167,6 @@ class TestUserModel:
         test_session.add(user)
         await test_session.commit()
         
-        # Поиск по email
         result = await test_session.execute(
             select(User).where(User.email == "query_user@example.com")
         )

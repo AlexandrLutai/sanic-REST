@@ -69,7 +69,6 @@ class TestAccountModel:
             account_number="1234567890123456"
         )
         
-        # Default значения устанавливаются в __init__
         assert account.balance == Decimal('0.00')
         assert account.currency == "RUB"
 
@@ -265,7 +264,6 @@ class TestAccountModel:
         await test_session.commit()
         await test_session.refresh(account)
         
-        # Проверяем что можем получить пользователя через связь
         assert account.user is not None
         assert account.user.id == test_user.id
         assert account.user.email == test_user.email
@@ -281,7 +279,6 @@ class TestAccountModel:
         test_session.add_all(accounts)
         await test_session.commit()
         
-        # Обновляем пользователя чтобы загрузить связанные счета
         await test_session.refresh(test_user)
         
         assert len(test_user.accounts) == 3
@@ -302,7 +299,6 @@ class TestAccountModel:
         await test_session.commit()
         await test_session.refresh(account)
         
-        # Обновляем баланс
         account.add_funds(250.50)
         await test_session.commit()
         await test_session.refresh(account)

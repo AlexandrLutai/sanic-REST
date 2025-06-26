@@ -167,7 +167,6 @@ class TestAdminModel:
         test_session.add(admin)
         await test_session.commit()
         
-        # Поиск по email
         result = await test_session.execute(
             select(Admin).where(Admin.email == "query_admin@example.com")
         )
@@ -222,6 +221,5 @@ class TestAdminModel:
             full_name="Admin User"
         )
         
-        # Проверяем что нет атрибутов relationships
         assert not hasattr(admin, 'accounts')
         assert not hasattr(admin, 'payments')

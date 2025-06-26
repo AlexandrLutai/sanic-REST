@@ -1,6 +1,6 @@
 import pytest
 import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, AsyncMock
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from app.database import (
     DatabaseConfig, 
@@ -78,11 +78,9 @@ class TestDatabaseSession:
 
     async def test_get_db_session_success(self):
         """Тест успешного получения сессии"""
-        # Упрощенный тест - просто проверяем, что функция не падает
         with patch('app.database.AsyncSessionLocal') as mock_session_local:
             mock_session = MagicMock(spec=AsyncSession)
             
-            # Создаем простой async context manager
             class MockAsyncSession:
                 async def __aenter__(self):
                     return mock_session
@@ -97,10 +95,8 @@ class TestDatabaseSession:
 
     async def test_get_db_session_with_rollback(self):
         """Тест обработки исключений в сессии"""
-        # Упрощенный тест - проверяем основную логику
         with patch('app.database.AsyncSessionLocal'):
             session_gen = get_db_session()
-            # Тест пройдет, если функция создается без ошибок
             assert session_gen is not None
 
 
@@ -109,10 +105,10 @@ class TestDatabaseOperations:
 
     async def test_create_tables(self):
         """Тест создания таблиц"""
-        # Простая проверка - функция должна пытаться импортировать модели
         with patch('app.database.engine') as mock_engine:
             mock_conn = MagicMock()
-            mock_conn.run_sync = MagicMock()
+            
+            mock_conn.run_sync = AsyncMock()
             
             class MockEngine:
                 def begin(self):
@@ -128,8 +124,8 @@ class TestDatabaseOperations:
             
             try:
                 await create_tables()
+                mock_conn.run_sync.assert_called_once()
             except ImportError:
-                # Ожидаемая ошибка - модели User, Admin и т.д. пока не созданы
                 pass
 
     async def test_drop_tables(self):
@@ -137,7 +133,6 @@ class TestDatabaseOperations:
         with patch('app.database.engine') as mock_engine:
             mock_conn = MagicMock()
             
-            # Делаем run_sync асинхронным
             async def mock_run_sync(func):
                 func()
             
@@ -158,7 +153,6 @@ class TestDatabaseOperations:
             with patch('app.database.Base') as mock_base:
                 mock_base.metadata.drop_all = MagicMock()
                 await drop_tables()
-                # Тест проходит, если функция выполняется без ошибок
 
     async def test_close_db(self):
         """Тест закрытия соединения с БД"""
@@ -168,7 +162,6 @@ class TestDatabaseOperations:
         
         with patch('app.database.engine', MockEngine()):
             await close_db()
-            # Тест проходит, если функция не падает
 
 
 class TestTestDbConfig:
