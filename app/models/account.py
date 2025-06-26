@@ -36,6 +36,7 @@ class Account(BaseModel):
     )
     
     user = relationship("User", back_populates="accounts")
+    payments = relationship("Payment", foreign_keys="Payment.account_id", back_populates="account", lazy="selectin")
     
     def __init__(self, **kwargs):
         """Инициализатор с правильной обработкой balance и currency"""
