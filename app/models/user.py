@@ -8,5 +8,5 @@ class User(Person):
     
     __tablename__ = "users"
     
-    # accounts = relationship("Account", back_populates="user", lazy="select")
+    accounts = relationship("Account", back_populates="user", lazy="selectin")
     # payments = relationship("Payment", back_populates="user", lazy="select")
