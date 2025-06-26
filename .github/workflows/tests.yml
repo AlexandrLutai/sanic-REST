@@ -1,4 +1,5 @@
 name: Run tests
+run: PYTHONPATH=$(pwd) pytest
 
 on: [push, pull_request]
 
