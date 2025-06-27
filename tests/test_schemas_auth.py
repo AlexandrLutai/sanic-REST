@@ -152,7 +152,9 @@ class TestUserResponse:
         data = {
             "id": 1,
             "email": "user@example.com",
-            "full_name": "Иван Иванов"
+            "full_name": "Иван Иванов",
+            "created_at": "2024-01-10T08:00:00Z",
+            "updated_at": "2024-01-15T12:30:00Z"
         }
         
         response = UserResponse(**data)
@@ -160,13 +162,16 @@ class TestUserResponse:
         assert response.id == 1
         assert response.email == "user@example.com"
         assert response.full_name == "Иван Иванов"
+        assert response.created_at is not None
+        assert response.updated_at is not None
     
     def test_user_response_invalid_id(self):
         """Тест невалидного ID"""
         data = {
             "id": "not_a_number",
             "email": "user@example.com",
-            "full_name": "Иван Иванов"
+            "full_name": "Иван Иванов",
+            "created_at": "2024-01-10T08:00:00Z"
         }
         
         with pytest.raises(ValidationError) as exc_info:
@@ -239,7 +244,9 @@ class TestLoginResponse:
             "user": {
                 "id": 1,
                 "email": "user@example.com",
-                "full_name": "Иван Иванов"
+                "full_name": "Иван Иванов",
+                "created_at": "2024-01-10T08:00:00Z",
+                "updated_at": "2024-01-15T12:30:00Z"
             },
             "token": {
                 "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
@@ -260,7 +267,8 @@ class TestLoginResponse:
             "user": {
                 "id": "invalid",
                 "email": "user@example.com",
-                "full_name": "Иван Иванов"
+                "full_name": "Иван Иванов",
+                "created_at": "2024-01-10T08:00:00Z"
             },
             "token": {
                 "access_token": "token123",
@@ -327,15 +335,19 @@ class TestSchemasIntegration:
     
     def test_schemas_dict_conversion(self):
         """Тест конвертации схем в словари"""
-        user_response = UserResponse(id=1, email="user@example.com", full_name="Test User")
+        user_response = UserResponse(
+            id=1, 
+            email="user@example.com", 
+            full_name="Test User",
+            created_at="2024-01-10T08:00:00Z"
+        )
         
         user_dict = user_response.model_dump()
         
-        assert user_dict == {
-            "id": 1,
-            "email": "user@example.com",
-            "full_name": "Test User"
-        }
+        assert user_dict["id"] == 1
+        assert user_dict["email"] == "user@example.com"
+        assert user_dict["full_name"] == "Test User"
+        assert user_dict["updated_at"] is None
     
     def test_nested_schema_validation(self):
         """Тест валидации вложенных схем"""
@@ -344,7 +356,8 @@ class TestSchemasIntegration:
             "user": {
                 "id": 1,
                 "email": "invalid-email",  # Невалидный email в UserResponse
-                "full_name": "Test User"
+                "full_name": "Test User",
+                "created_at": "2024-01-10T08:00:00Z"
             },
             "token": {
                 "access_token": "token123",
