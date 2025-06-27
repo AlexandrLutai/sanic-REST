@@ -1,6 +1,7 @@
 """Pydantic схемы для аутентификации и авторизации"""
 
 from typing import Optional
+from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -41,13 +42,17 @@ class UserResponse(BaseModel):
     id: int = Field(..., description="Уникальный идентификатор пользователя")
     email: str = Field(..., description="Email пользователя")
     full_name: str = Field(..., description="Полное имя пользователя")
+    created_at: datetime = Field(..., description="Дата создания пользователя")
+    updated_at: Optional[datetime] = Field(None, description="Дата последнего обновления")
 
     model_config = {
         "json_schema_extra": {
             "example": {
                 "id": 1,
                 "email": "user@example.com",
-                "full_name": "Иван Иванов"
+                "full_name": "Иван Иванов",
+                "created_at": "2024-01-10T08:00:00Z",
+                "updated_at": "2024-01-15T12:30:00Z"
             }
         }
     }
@@ -81,7 +86,9 @@ class LoginResponse(BaseModel):
                 "user": {
                     "id": 1,
                     "email": "user@example.com",
-                    "full_name": "Иван Иванов"
+                    "full_name": "Иван Иванов",
+                    "created_at": "2024-01-10T08:00:00Z",
+                    "updated_at": "2024-01-15T12:30:00Z"
                 },
                 "token": {
                     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
