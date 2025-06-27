@@ -56,9 +56,7 @@ class AdminAccountResponse(BaseModel):
 class UserManagementRequest(BaseModel):
     """Схема запроса для управления пользователем"""
 
-    action: str = Field(
-        ..., description="Действие: 'create', 'update', 'delete'"
-    )
+    action: str = Field(..., description="Действие: 'create', 'update', 'delete'")
     full_name: Optional[str] = Field(
         None,
         min_length=2,
@@ -85,9 +83,7 @@ class UserManagementRequest(BaseModel):
 class AdminUsersListResponse(BaseModel):
     """Схема ответа со списком пользователей для админки"""
 
-    users: List[AdminUserResponse] = Field(
-        ..., description="Список пользователей"
-    )
+    users: List[AdminUserResponse] = Field(..., description="Список пользователей")
     total: int = Field(..., description="Общее количество пользователей")
     page: int = Field(..., description="Номер текущей страницы")
     per_page: int = Field(..., description="Количество элементов на странице")
@@ -115,14 +111,10 @@ class AdminUsersListResponse(BaseModel):
 class AdminAccountsListResponse(BaseModel):
     """Схема ответа со списком счетов для админки"""
 
-    accounts: List[AdminAccountResponse] = Field(
-        ..., description="Список счетов"
-    )
+    accounts: List[AdminAccountResponse] = Field(..., description="Список счетов")
     total: int = Field(..., description="Общее количество счетов")
     page: int = Field(..., description="Номер текущей страницы")
-    per_page: int = Field(
-        ..., description="Количество элементов на странице"
-    )
+    per_page: int = Field(..., description="Количество элементов на странице")
 
     model_config = {
         "json_schema_extra": {
