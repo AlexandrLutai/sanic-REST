@@ -6,7 +6,7 @@ from sanic.response import json as sanic_json
 from sanic.request import Request
 
 from app.schemas.auth import LoginRequest, LoginResponse, UserResponse, TokenResponse
-from app.auth.service import AuthService
+from app.auth.service import AuthService, get_jwt_manager
 
 auth_bp = Blueprint("auth", url_prefix="/api/v1/auth")
 
@@ -37,9 +37,13 @@ async def login(request: Request):
         )
         
         token_response = TokenResponse(
-            access_token="temp_token",  # TODO: генерировать реальный токен
+            access_token=get_jwt_manager(request).generate_token(
+                user_id=user_data.id,
+                user_type="user",
+                expires_in=request.app.config.get("JWT_ACCESS_TOKEN_EXPIRES", 3600)
+            ),
             token_type="bearer",
-            expires_in=3600
+            expires_in=request.app.config.get("JWT_ACCESS_TOKEN_EXPIRES", 3600)
         )
         
         response = LoginResponse(
@@ -82,9 +86,13 @@ async def admin_login(request: Request):
         )
         
         token_response = TokenResponse(
-            access_token="temp_token",  # TODO: генерировать реальный токен
+            access_token=get_jwt_manager(request).generate_token(
+                user_id=admin_data.id,
+                user_type="admin",
+                expires_in=request.app.config.get("JWT_ACCESS_TOKEN_EXPIRES", 3600)
+            ),
             token_type="bearer",
-            expires_in=3600
+            expires_in=request.app.config.get("JWT_ACCESS_TOKEN_EXPIRES", 3600)
         )
         
         response = LoginResponse(
