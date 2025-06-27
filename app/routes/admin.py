@@ -6,12 +6,6 @@ from sanic.response import json as sanic_json
 from sanic.request import Request
 
 from app.schemas.auth import UserResponse
-from app.schemas.admin import (
-    CreateUserRequest, 
-    UpdateUserRequest, 
-    UserListResponse,
-    UserAccountsListResponse
-)
 from app.auth.service import admin_required
 from app.services import UserService, AccountService
 
@@ -48,14 +42,28 @@ async def get_admin_profile(request: Request):
 async def create_user(request: Request):
     """Создать пользователя"""
     try:
-        # Валидация входных данных
-        user_data = CreateUserRequest(**request.json)
+        # Простая валидация входных данных
+        json_data = request.json
+        if not json_data:
+            return sanic_json({"error": "Отсутствуют данные"}, status=400)
+        
+        email = json_data.get("email")
+        password = json_data.get("password")
+        full_name = json_data.get("full_name")
+        
+        # Базовая валидация
+        if not email or "@" not in email:
+            return sanic_json({"error": "Некорректный email"}, status=400)
+        if not password or len(password) < 6:
+            return sanic_json({"error": "Пароль должен быть не менее 6 символов"}, status=400)
+        if not full_name or len(full_name) < 2:
+            return sanic_json({"error": "Имя должно быть не менее 2 символов"}, status=400)
         
         # Создаем пользователя в базе данных
         created_user = await UserService.create_user(
-            email=user_data.email,
-            password=user_data.password,
-            full_name=user_data.full_name
+            email=email,
+            password=password,
+            full_name=full_name
         )
         
         response = UserResponse(
@@ -101,8 +109,7 @@ async def get_users_list(request: Request):
             ]
         }
         
-        response = UserListResponse(**users_data)
-        return sanic_json(response.model_dump())
+        return sanic_json(users_data)
         
     except Exception as e:
         return sanic_json(
@@ -116,15 +123,29 @@ async def get_users_list(request: Request):
 async def update_user(request: Request, user_id: int):
     """Обновить пользователя"""
     try:
-        # Валидация входных данных
-        user_data = UpdateUserRequest(**request.json)
+        # Простая валидация входных данных
+        json_data = request.json
+        if not json_data:
+            return sanic_json({"error": "Отсутствуют данные"}, status=400)
+        
+        email = json_data.get("email")
+        password = json_data.get("password")
+        full_name = json_data.get("full_name")
+        
+        # Базовая валидация (только для присутствующих полей)
+        if email is not None and "@" not in email:
+            return sanic_json({"error": "Некорректный email"}, status=400)
+        if password is not None and len(password) < 6:
+            return sanic_json({"error": "Пароль должен быть не менее 6 символов"}, status=400)
+        if full_name is not None and len(full_name) < 2:
+            return sanic_json({"error": "Имя должно быть не менее 2 символов"}, status=400)
         
         # Обновляем пользователя в базе данных
         updated_user = await UserService.update_user(
             user_id=user_id,
-            email=user_data.email,
-            password=user_data.password,
-            full_name=user_data.full_name
+            email=email,
+            password=password,
+            full_name=full_name
         )
         
         if not updated_user:
@@ -209,8 +230,7 @@ async def get_user_accounts_admin(request: Request, user_id: int):
             ]
         }
         
-        response = UserAccountsListResponse(**user_accounts_data)
-        return sanic_json(response.model_dump())
+        return sanic_json(user_accounts_data)
         
     except Exception as e:
         return sanic_json(
