@@ -78,7 +78,7 @@ class TestDatabaseSession:
 
     async def test_get_db_session_success(self):
         """Тест успешного получения сессии"""
-        with patch('app.database.AsyncSessionLocal') as mock_session_local:
+        with patch('app.database.connection.AsyncSessionLocal') as mock_session_local:
             mock_session = MagicMock(spec=AsyncSession)
             
             class MockAsyncSession:
@@ -95,7 +95,7 @@ class TestDatabaseSession:
 
     async def test_get_db_session_with_rollback(self):
         """Тест обработки исключений в сессии"""
-        with patch('app.database.AsyncSessionLocal'):
+        with patch('app.database.connection.AsyncSessionLocal'):
             session_gen = get_db_session()
             assert session_gen is not None
 
@@ -105,7 +105,7 @@ class TestDatabaseOperations:
 
     async def test_create_tables(self):
         """Тест создания таблиц"""
-        with patch('app.database.engine') as mock_engine:
+        with patch('app.database.connection.engine') as mock_engine:
             mock_conn = MagicMock()
             
             mock_conn.run_sync = AsyncMock()
@@ -130,11 +130,11 @@ class TestDatabaseOperations:
 
     async def test_drop_tables(self):
         """Тест удаления таблиц"""
-        with patch('app.database.engine') as mock_engine:
+        with patch('app.database.connection.engine') as mock_engine:
             mock_conn = MagicMock()
             
             async def mock_run_sync(func):
-                func()
+                func(mock_conn)
             
             mock_conn.run_sync = mock_run_sync
             
@@ -160,7 +160,7 @@ class TestDatabaseOperations:
             async def dispose(self):
                 pass
         
-        with patch('app.database.engine', MockEngine()):
+        with patch('app.database.connection.engine', MockEngine()):
             await close_db()
 
 
@@ -173,7 +173,7 @@ class TestTestDbConfig:
 
     def test_get_test_engine(self):
         """Тест создания тестового движка"""
-        with patch('app.database.create_async_engine') as mock_create_engine:
+        with patch('app.database.connection.create_async_engine') as mock_create_engine:
             mock_engine = MagicMock()
             mock_create_engine.return_value = mock_engine
             

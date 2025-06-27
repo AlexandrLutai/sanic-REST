@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-from .models.base import Base
+from ..models.base import Base
 
 load_dotenv()
 
@@ -69,7 +69,7 @@ async def create_tables():
     Используется для инициализации БД.
     """
     async with engine.begin() as conn:
-        from .models import User, Admin, Account, Payment
+        from ..models import User, Admin, Account, Payment
         await conn.run_sync(Base.metadata.create_all)
 
 
