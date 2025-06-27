@@ -184,7 +184,7 @@ class TestAuthService:
         with patch('app.auth.service.get_db_session') as mock_get_session:
             mock_session = MagicMock(spec=AsyncSession)
             mock_result = MagicMock()
-            mock_result.scalar_one_or_none.return_value = mock_user
+            mock_result.scalar_one_or_none = MagicMock(return_value=mock_user)
             mock_session.execute = AsyncMock(return_value=mock_result)
             
             mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
@@ -200,7 +200,7 @@ class TestAuthService:
         with patch('app.auth.service.get_db_session') as mock_get_session:
             mock_session = MagicMock(spec=AsyncSession)
             mock_result = MagicMock()
-            mock_result.scalar_one_or_none.return_value = None
+            mock_result.scalar_one_or_none = MagicMock(return_value=None)
             mock_session.execute = AsyncMock(return_value=mock_result)
             
             mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
@@ -215,7 +215,7 @@ class TestAuthService:
         with patch('app.auth.service.get_db_session') as mock_get_session:
             mock_session = MagicMock(spec=AsyncSession)
             mock_result = MagicMock()
-            mock_result.scalar_one_or_none.return_value = mock_user
+            mock_result.scalar_one_or_none = MagicMock(return_value=mock_user)
             mock_session.execute = AsyncMock(return_value=mock_result)
             
             mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
@@ -230,7 +230,7 @@ class TestAuthService:
         with patch('app.auth.service.get_db_session') as mock_get_session:
             mock_session = MagicMock(spec=AsyncSession)
             mock_result = MagicMock()
-            mock_result.scalar_one_or_none.return_value = mock_admin
+            mock_result.scalar_one_or_none = MagicMock(return_value=mock_admin)
             mock_session.execute = AsyncMock(return_value=mock_result)
             
             mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
@@ -246,7 +246,7 @@ class TestAuthService:
             mock_session = MagicMock(spec=AsyncSession)
             
             mock_result = MagicMock()
-            mock_result.scalar_one_or_none.return_value = None
+            mock_result.scalar_one_or_none = MagicMock(return_value=None)
             mock_session.execute = AsyncMock(return_value=mock_result)
             mock_session.add = MagicMock()
             mock_session.commit = AsyncMock()
@@ -288,7 +288,7 @@ class TestAuthService:
             
             existing_user = MagicMock()
             mock_result = MagicMock()
-            mock_result.scalar_one_or_none.return_value = existing_user
+            mock_result.scalar_one_or_none = MagicMock(return_value=existing_user)
             mock_session.execute = AsyncMock(return_value=mock_result)
             
             mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
@@ -410,7 +410,7 @@ class TestGetCurrentUser:
                 with patch('app.auth.service.get_db_session') as mock_get_session:
                     mock_session = MagicMock()
                     mock_result = MagicMock()
-                    mock_result.scalar_one_or_none.return_value = mock_user
+                    mock_result.scalar_one_or_none = MagicMock(return_value=mock_user)
                     mock_session.execute = AsyncMock(return_value=mock_result)
                     
                     mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
@@ -436,7 +436,7 @@ class TestGetCurrentUser:
                 with patch('app.auth.service.get_db_session') as mock_get_session:
                     mock_session = MagicMock()
                     mock_result = MagicMock()
-                    mock_result.scalar_one_or_none.return_value = mock_admin
+                    mock_result.scalar_one_or_none = MagicMock(return_value=mock_admin)
                     mock_session.execute = AsyncMock(return_value=mock_result)
                     
                     mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
@@ -498,7 +498,7 @@ class TestGetCurrentUser:
                 with patch('app.auth.service.get_db_session') as mock_get_session:
                     mock_session = MagicMock()
                     mock_result = MagicMock()
-                    mock_result.scalar_one_or_none.return_value = None
+                    mock_result.scalar_one_or_none = MagicMock(return_value=None)
                     mock_session.execute = AsyncMock(return_value=mock_result)
                     
                     mock_get_session.return_value.__aenter__ = AsyncMock(return_value=mock_session)
