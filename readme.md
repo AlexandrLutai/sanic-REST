@@ -248,8 +248,12 @@ sanic/
 ├── config/                  # Конфигурационные файлы
 │   ├── alembic.ini         # Настройки Alembic
 │   └── .env.example        # Пример переменных окружения
-├── docs/                    # Документация
 ├── scripts/                 # Служебные скрипты
+│   ├── test_api_local.py   # Локальное тестирование API
+│   ├── create_test_users.py # Создание тестовых пользователей
+│   └── test_api.py         # API тесты
+├── docs/                    # Документация
+├── data/                    # Локальные данные (SQLite БД)
 ├── requirements.txt        # Python зависимости
 └── README.md               # Документация
 ```
