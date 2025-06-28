@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from app.models.base import Base
 from app.models import User, Admin, Account, Payment
+from app.database.connection import db_config  # Импортируем конфигурацию БД
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -45,7 +46,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = db_config.DATABASE_URL  # Используем URL из конфигурации приложения
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -67,7 +68,7 @@ async def run_migrations_online() -> None:
     from sqlalchemy.ext.asyncio import create_async_engine
     
     connectable = create_async_engine(
-        config.get_main_option("sqlalchemy.url"),
+        db_config.DATABASE_URL,  # Используем URL из конфигурации приложения
         poolclass=pool.NullPool,
     )
 
