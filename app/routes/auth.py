@@ -51,7 +51,7 @@ async def login(request: Request):
             token=token_response
         )
         
-        return sanic_json(response.model_dump())
+        return sanic_json(response.model_dump(mode='json'))
         
     except Exception as e:
         return sanic_json(
@@ -100,7 +100,7 @@ async def admin_login(request: Request):
             token=token_response
         )
         
-        return sanic_json(response.model_dump())
+        return sanic_json(response.model_dump(mode='json'))
         
     except Exception as e:
         return sanic_json(
