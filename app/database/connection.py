@@ -1,5 +1,5 @@
 import os
-from typing import AsyncGenerator
+from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
@@ -48,14 +48,16 @@ AsyncSessionLocal = sessionmaker(
 )
 
 
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+@asynccontextmanager
+async def get_db_session():
     """
     Получить сессию базы данных.
-    Используется в dependency injection для Sanic роутов.
+    Используется как async context manager.
     """
     async with AsyncSessionLocal() as session:
         try:
             yield session
+            await session.commit()
         except Exception:
             await session.rollback()
             raise
