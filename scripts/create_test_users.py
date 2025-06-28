@@ -10,7 +10,7 @@ async def create_test_users():
     """Создаем тестовых пользователей в SQLite базе"""
     
     # Подключаемся к SQLite базе
-    conn = sqlite3.connect('./test.db')
+    conn = sqlite3.connect('./data/test.db')
     cursor = conn.cursor()
     
     try:
