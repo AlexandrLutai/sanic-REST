@@ -19,17 +19,27 @@ class DatabaseConfig:
         self.DB_PORT = os.getenv("DB_PORT", "5432")
         self.DB_NAME = os.getenv("DB_NAME", "sanic_payment_db")
         
-        self.DATABASE_URL = (
-            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        )
+        # Поддержка SQLite для локального тестирования
+        if self.DB_NAME.startswith("sqlite://"):
+            self.DATABASE_URL = self.DB_NAME.replace("sqlite://", "sqlite+aiosqlite://")
+        else:
+            self.DATABASE_URL = (
+                f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}"
+                f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            )
         
-        self.ENGINE_CONFIG = {
-            "echo": os.getenv("DB_ECHO", "false").lower() == "true",
-            "pool_size": int(os.getenv("DB_POOL_SIZE", "10")),
-            "max_overflow": int(os.getenv("DB_MAX_OVERFLOW", "20")),
-            "pool_pre_ping": True,
-        }
+        # Конфигурация движка зависит от типа БД
+        if "sqlite" in self.DATABASE_URL:
+            self.ENGINE_CONFIG = {
+                "echo": os.getenv("DB_ECHO", "false").lower() == "true",
+            }
+        else:
+            self.ENGINE_CONFIG = {
+                "echo": os.getenv("DB_ECHO", "false").lower() == "true",
+                "pool_size": int(os.getenv("DB_POOL_SIZE", "10")),
+                "max_overflow": int(os.getenv("DB_MAX_OVERFLOW", "20")),
+                "pool_pre_ping": True,
+            }
 
 
 db_config = DatabaseConfig()
