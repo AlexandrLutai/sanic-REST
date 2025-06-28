@@ -13,6 +13,13 @@ from app.services import UserService, AccountService, PaymentService
 user_bp = Blueprint("user", url_prefix="/api/v1/user")
 
 
+@user_bp.get("/profile")
+@user_required
+async def get_user_profile_alias(request: Request):
+    """Получить данные о себе (алиас для /me)"""
+    return await get_user_profile(request)
+
+
 @user_bp.get("/me")
 @user_required
 async def get_user_profile(request: Request):
