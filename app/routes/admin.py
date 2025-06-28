@@ -12,6 +12,13 @@ from app.services import UserService, AccountService
 admin_bp = Blueprint("admin", url_prefix="/api/v1/admin")
 
 
+@admin_bp.get("/profile")
+@admin_required
+async def get_admin_profile_alias(request: Request):
+    """Получить данные о себе (алиас для /me)"""
+    return await get_admin_profile(request)
+
+
 @admin_bp.get("/me")
 @admin_required
 async def get_admin_profile(request: Request):
