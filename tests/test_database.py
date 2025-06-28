@@ -89,9 +89,8 @@ class TestDatabaseSession:
             
             mock_session_local.return_value = MockAsyncSession()
             
-            session_gen = get_db_session()
-            session = await session_gen.__anext__()
-            assert session == mock_session
+            async with get_db_session() as session:
+                assert session == mock_session
 
     async def test_get_db_session_with_rollback(self):
         """Тест обработки исключений в сессии"""
